@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Scam Simulation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .warning-banner {
+            background-color: #ffcc00;
+            color: #333;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            box-sizing: border-box;
+            border-bottom: 2px solid #e6b800;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            padding: 30px 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        h1 {
+            color: #1c1e21;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        p {
+            color: #606770;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-messenger {
+            background-color: #0084ff;
+        }
+        .btn-action {
+            background-color: #42b72a;
+        }
+        #hidden-steps {
+            display: none;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .instruction {
+            font-size: 14px;
+            color: #d93025;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="warning-banner">
+        ⚠️ This is an educational simulation. No real data is collected or shared.
+    </div>
+
+    <div class="container">
+        <h1>You've Won a Reward!</h1>
+        <p>To claim your exclusive prize, you must first share this promotion with 5 friends or groups on Messenger.</p>
+        
+        <button class="btn btn-messenger" id="shareBtn">📨 Share on Messenger</button>
+        <p class="instruction" id="status-text">Step 1: Pending...</p>
+
+        <div id="hidden-steps">
+            <p>Thank you for sharing! Please complete the final step to unlock your reward.</p>
+            <button class="btn btn-action fake-action">VERIFY NOW</button>
+            <button class="btn btn-action fake-action" style="background-color: #f26b28;">CLAIM</button>
+            <button class="btn btn-action fake-action" style="background-color: #e50914;">ACTIVATE</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const shareBtn = document.getElementById("shareBtn");
+            const hiddenSteps = document.getElementById("hidden-steps");
+            const statusText = document.getElementById("status-text");
+            const actionButtons = document.querySelectorAll(".fake-action");
+
+            // Safe URL for demonstration
+            const safeTestUrl = "https://your-test-site.example/landing";
+
+            shareBtn.addEventListener("click", function() {
+                // Build the deep link
+                const encodedUrl = encodeURIComponent(safeTestUrl);
+                const deepLink = "fb-messenger://share/?link=" + encodedUrl;
+
+                // Create the educational explanation
+                const alertMessage = "EDUCATIONAL DEMONSTRATION:\n\n" +
+                                     "In a real scam, this button executes a deep link to force open your messaging app. " +
+                                     "It attempts to make you send the scam link to your contacts to make it go viral.\n\n" +
+                                     "Constructed Payload:\n" + deepLink + "\n\n" +
+                                     "Click OK to simulate completing the 'Share' requirement.";
+
+                // Show alert instead of actually opening the link
+                alert(alertMessage);
+
+                // Simulate the scam progressing to the next stage
+                shareBtn.style.backgroundColor = "#ccc";
+                shareBtn.style.cursor = "not-allowed";
+                shareBtn.innerText = "✅ Shared";
+                shareBtn.disabled = true;
+                
+                statusText.innerText = "Step 1: Complete!";
+                statusText.style.color = "#42b72a";
+
+                // Reveal the monetization payload buttons
+                hiddenSteps.style.display = "block";
+            });
+
+            // Add event listeners to the fake action buttons
+            actionButtons.forEach(function(button) {
+                button.addEventListener("click", function() {
+                    const actionName = this.innerText;
+                    
+                    const explanationMessage = "SCAM MECHANICS REVEALED:\n\n" +
+                                               "You clicked '" + actionName + "'.\n\n" +
+                                               "In a real reward scam, there is no actual prize. Clicking this button " +
+                                               "would redirect you to a CPA (Cost Per Action) network. You would be forced " +
+                                               "to fill out endless surveys, download suspicious apps, or enter your " +
+                                               "credit card details for 'shipping'.\n\n" +
+                                               "The scammer gets paid a commission for every person who completes these tasks.";
+                    
+                    alert(explanationMessage);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
