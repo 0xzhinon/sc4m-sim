@@ -109,25 +109,36 @@
             const statusText = document.getElementById("status-text");
             const actionButtons = document.querySelectorAll(".fake-action");
 
-            // Safe URL for demonstration
+            // !! IMPORTANT: Replace this with YOUR controlled test URL !!
             const safeTestUrl = "https://your-test-site.example/landing";
 
             shareBtn.addEventListener("click", function() {
-                // Build the deep link
+                // Build the Messenger deep link (exactly like the scam does)
                 const encodedUrl = encodeURIComponent(safeTestUrl);
                 const deepLink = "fb-messenger://share/?link=" + encodedUrl;
 
-                // Create the educational explanation
-                const alertMessage = "EDUCATIONAL DEMONSTRATION:\n\n" +
-                                     "In a real scam, this button executes a deep link to force open your messaging app. " +
-                                     "It attempts to make you send the scam link to your contacts to make it go viral.\n\n" +
-                                     "Constructed Payload:\n" + deepLink + "\n\n" +
-                                     "Click OK to simulate completing the 'Share' requirement.";
+                // -----------------------------------------------------------------
+                // REAL REDIRECT – opens Messenger app (or fallback page on desktop)
+                // -----------------------------------------------------------------
+                // Before we send them, we briefly explain what's happening
+                // (comment out the confirm if you want a fully seamless simulation)
+                const proceed = confirm(
+                    "🔬 EDUCATIONAL SIMULATION\n\n" +
+                    "You are about to be redirected to Messenger with a pre‑filled share dialog.\n\n" +
+                    "The link being shared is a SAFE demonstration page under your control.\n\n" +
+                    "In a real scam, this would trick you into sending a malicious URL to your contacts.\n\n" +
+                    "Click OK to continue (Messenger will open)."
+                );
+                if (!proceed) return;  // Stop if user cancels
 
-                // Show alert instead of actually opening the link
-                alert(alertMessage);
+                // Trigger the actual deep link
+                window.location.href = deepLink;
 
-                // Simulate the scam progressing to the next stage
+                // After the redirect, the page might still be in the background.
+                // We simulate that sharing was “done” once they return.
+                // (Because the redirect opens Messenger externally, we don't know when it completes.
+                //  In a real scam, the victim would later come back and see the “verify” buttons.
+                //  For simulation, we reveal the next steps immediately after the click.)
                 shareBtn.style.backgroundColor = "#ccc";
                 shareBtn.style.cursor = "not-allowed";
                 shareBtn.innerText = "✅ Shared";
@@ -135,25 +146,22 @@
                 
                 statusText.innerText = "Step 1: Complete!";
                 statusText.style.color = "#42b72a";
-
-                // Reveal the monetization payload buttons
+                
                 hiddenSteps.style.display = "block";
             });
 
-            // Add event listeners to the fake action buttons
+            // Fake action buttons – explain the scam mechanics
             actionButtons.forEach(function(button) {
                 button.addEventListener("click", function() {
                     const actionName = this.innerText;
                     
-                    const explanationMessage = "SCAM MECHANICS REVEALED:\n\n" +
-                                               "You clicked '" + actionName + "'.\n\n" +
-                                               "In a real reward scam, there is no actual prize. Clicking this button " +
-                                               "would redirect you to a CPA (Cost Per Action) network. You would be forced " +
-                                               "to fill out endless surveys, download suspicious apps, or enter your " +
-                                               "credit card details for 'shipping'.\n\n" +
-                                               "The scammer gets paid a commission for every person who completes these tasks.";
-                    
-                    alert(explanationMessage);
+                    alert(
+                        "SCAM MECHANICS REVEALED:\n\n" +
+                        "You clicked '" + actionName + "'.\n\n" +
+                        "In a real reward scam, there is no prize. Clicking this button would redirect " +
+                        "to CPA networks, forcing you to complete surveys, install apps, or enter credit " +
+                        "card details for 'shipping'. The scammer earns a commission for each completed action."
+                    );
                 });
             });
         });
