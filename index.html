@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educational Scam Simulation</title>
+    <title>Educational Scam Simulation – 5‑Share Requirement</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -76,8 +76,12 @@
         }
         .instruction {
             font-size: 14px;
-            color: #d93025;
             font-weight: bold;
+        }
+        .share-counter {
+            font-size: 14px;
+            margin-top: 5px;
+            color: #555;
         }
     </style>
 </head>
@@ -89,10 +93,11 @@
 
     <div class="container">
         <h1>You've Won a Reward!</h1>
-        <p>To claim your exclusive prize, you must first share this promotion with 5 friends or groups on Messenger.</p>
+        <p>To claim your exclusive prize, you must first share this promotion with <strong>5 groups or 15 friends</strong> on Messenger.</p>
         
         <button class="btn btn-messenger" id="shareBtn">📨 Share on Messenger</button>
-        <p class="instruction" id="status-text">Step 1: Pending...</p>
+        <p class="share-counter" id="shareCount">0 / 5 shares completed</p>
+        <p class="instruction" id="status-text" style="color: #d93025;">Step 1: Pending...</p>
 
         <div id="hidden-steps">
             <p>Thank you for sharing! Please complete the final step to unlock your reward.</p>
@@ -107,50 +112,56 @@
             const shareBtn = document.getElementById("shareBtn");
             const hiddenSteps = document.getElementById("hidden-steps");
             const statusText = document.getElementById("status-text");
+            const shareCountDisplay = document.getElementById("shareCount");
             const actionButtons = document.querySelectorAll(".fake-action");
 
-            // !! IMPORTANT: Replace this with YOUR controlled test URL !!
+            // CHANGE THIS to your own test URL
             const safeTestUrl = "https://0xzhinon.github.io/sc4m-sim/";
+            
+            let shareClicks = 0;
+            const requiredShares = 5;
 
             shareBtn.addEventListener("click", function() {
-                // Build the Messenger deep link (exactly like the scam does)
+                // Build the Messenger deep link
                 const encodedUrl = encodeURIComponent(safeTestUrl);
                 const deepLink = "fb-messenger://share/?link=" + encodedUrl;
 
-                // -----------------------------------------------------------------
-                // REAL REDIRECT – opens Messenger app (or fallback page on desktop)
-                // -----------------------------------------------------------------
-                // Before we send them, we briefly explain what's happening
-                // (comment out the confirm if you want a fully seamless simulation)
+                // Educational warning before each share
                 const proceed = confirm(
                     "🔬 EDUCATIONAL SIMULATION\n\n" +
-                    "You are about to be redirected to Messenger with a pre‑filled share dialog.\n\n" +
-                    "The link being shared is a SAFE demonstration page under your control.\n\n" +
-                    "In a real scam, this would trick you into sending a malicious URL to your contacts.\n\n" +
-                    "Click OK to continue (Messenger will open)."
+                    "You are about to be redirected to Messenger with a pre‑filled share dialog.\n" +
+                    "The link is a SAFE test page under your control.\n\n" +
+                    "In a real scam, you would be tricked into sending a malicious URL to your contacts.\n\n" +
+                    "Click OK to open Messenger (you'll need to manually select friends/groups)."
                 );
-                if (!proceed) return;  // Stop if user cancels
+                if (!proceed) return;
 
-                // Trigger the actual deep link
+                // Trigger the share intent
                 window.location.href = deepLink;
 
-                // After the redirect, the page might still be in the background.
-                // We simulate that sharing was “done” once they return.
-                // (Because the redirect opens Messenger externally, we don't know when it completes.
-                //  In a real scam, the victim would later come back and see the “verify” buttons.
-                //  For simulation, we reveal the next steps immediately after the click.)
-                shareBtn.style.backgroundColor = "#ccc";
-                shareBtn.style.cursor = "not-allowed";
-                shareBtn.innerText = "✅ Shared";
-                shareBtn.disabled = true;
-                
-                statusText.innerText = "Step 1: Complete!";
-                statusText.style.color = "#42b72a";
-                
-                hiddenSteps.style.display = "block";
+                // Increment the counter (since the redirect happens, the page might stay open)
+                shareClicks++;
+                shareCountDisplay.textContent = shareClicks + " / " + requiredShares + " shares completed";
+
+                if (shareClicks >= requiredShares) {
+                    // Requirement met – reveal the fake “claim” buttons
+                    shareBtn.style.backgroundColor = "#ccc";
+                    shareBtn.style.cursor = "not-allowed";
+                    shareBtn.innerText = "✅ All shares completed";
+                    shareBtn.disabled = true;
+                    
+                    statusText.innerText = "Step 1: Complete!";
+                    statusText.style.color = "#42b72a";
+                    
+                    hiddenSteps.style.display = "block";
+                } else {
+                    // Still need more shares – update status
+                    const remaining = requiredShares - shareClicks;
+                    statusText.innerText = `You need ${remaining} more share${remaining > 1 ? 's' : ''}.`;
+                }
             });
 
-            // Fake action buttons – explain the scam mechanics
+            // Fake action buttons – reveal the scam mechanics
             actionButtons.forEach(function(button) {
                 button.addEventListener("click", function() {
                     const actionName = this.innerText;
@@ -158,9 +169,9 @@
                     alert(
                         "SCAM MECHANICS REVEALED:\n\n" +
                         "You clicked '" + actionName + "'.\n\n" +
-                        "In a real reward scam, there is no prize. Clicking this button would redirect " +
-                        "to CPA networks, forcing you to complete surveys, install apps, or enter credit " +
-                        "card details for 'shipping'. The scammer earns a commission for each completed action."
+                        "In a real scam, there is NO prize. Clicking this button would redirect you " +
+                        "to CPA networks, forcing endless surveys, app installs, or credit card " +
+                        "details for fake 'shipping'. The scammer earns a commission for each victim."
                     );
                 });
             });
